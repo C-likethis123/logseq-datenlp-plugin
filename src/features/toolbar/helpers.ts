@@ -13,9 +13,9 @@ import {
 } from 'date-fns'
 import { getDateForPageWithoutBrackets } from 'logseq-dateutils'
 
-type StartDayOfWeek = 'Monday' | 'Saturday' | 'Sunday'
+export type StartDayOfWeek = 'Monday' | 'Saturday' | 'Sunday'
 
-const startOfWeekMap: Record<StartDayOfWeek, Day> = {
+export const startOfWeekMap: Record<StartDayOfWeek, Day> = {
   Monday: 1,
   Sunday: 0,
   Saturday: 6,
@@ -50,6 +50,12 @@ const isWeeklyEntry = (pageName: string) => {
   return weekNumber >= 1 && weekNumber <= 53;
 }
 
+export const getWeekBasedOnSettings = (date?: Date): number => {
+  return getWeek(date ?? new Date(), {
+    weekStartsOn: startOfWeekMap[logseq.settings!.startOfWeek as StartDayOfWeek] ,
+  })
+}
+
 /**
  * Interesting: why the difference between "name" and "originalName"?
  */
@@ -57,7 +63,7 @@ const getJournalWeek = async () => {
   const currPage = await logseq.Editor.getCurrentPage()
   if (!currPage || !isWeeklyEntry(currPage.originalName)) {
     const year = getYear(new Date());
-    const week = getWeek(new Date());
+    const week = getWeekBasedOnSettings();
     return { year, week };
   }
   const { originalName } = currPage as PageEntity

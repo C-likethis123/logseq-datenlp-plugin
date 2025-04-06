@@ -1,7 +1,7 @@
-import { getWeek, getYear } from 'date-fns'
+import { getYear } from 'date-fns'
 
 import { handleAppendEmbeds } from './handle-append-page-embeds'
-import { helpers } from './helpers'
+import { getWeekBasedOnSettings, helpers, StartDayOfWeek, startOfWeekMap } from './helpers'
 import css from './toolbar.css?raw'
 
 export const handleToolbar = async () => {
@@ -25,7 +25,7 @@ export const handleToolbar = async () => {
     },
     async showWeek() {
       const year = getYear(new Date())
-      const week = getWeek(new Date())
+      const week = getWeekBasedOnSettings();
       const pageName = `${year}/Week ${week}`
       await logseq.Editor.createPage(
         pageName,
@@ -107,7 +107,7 @@ export const handleToolbar = async () => {
   })
   logseq.App.registerUIItem('toolbar', {
     key: 'datenlp-week-dis',
-    template: `<a class="button datenlp-toolbar" data-on-click="showWeek">Week ${getWeek(new Date())}</a>`,
+    template: `<a class="button datenlp-toolbar" data-on-click="showWeek">Week ${getWeekBasedOnSettings()}</a>`,
   })
   logseq.App.registerUIItem('toolbar', {
     key: 'datenlp-week-next',
